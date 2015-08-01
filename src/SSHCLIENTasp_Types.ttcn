@@ -1,0 +1,52 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+// Copyright Test Competence Center (TCC) ETH 2005                           //
+//                                                                           //
+// The copyright to the computer  program(s) herein  is the property of TCC. //
+// The program(s) may be used and/or copied only with the written permission //
+// of TCC or in accordance with  the terms and conditions  stipulated in the //
+// agreement/contract under which the program(s) has been supplied.          //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+//
+//  File:               SSHCLIENTasp_Types.ttcn
+//  Description:        SSH CLIENT ASP definition file
+//  Rev:                R3E
+//  Prodnr:             CNL 113 484
+//  Updated:            2005.11.23
+//  Contact:            http://ttcn.ericsson.se
+//
+
+
+module SSHCLIENTasp_Types
+{
+////////////////////////////////
+// Types
+type integer ReadMode; // BUFFERED = 0, UNBUFFERED = 1, RAW = 2
+type charstring ASP_SSH;
+type record ASP_SSH_Close {};	// NULL_type
+type record ASP_SSH_PseudoPrompt {};	// NULL_type
+type record ASP_SSH_Status
+{
+  integer     status_code,
+  charstring  status_message
+};
+type record ASP_SSH_SetPrompt
+{ 
+  charstring prompt_name,
+  charstring prompt_value
+};
+type record ASP_SSH_SetRegexPrompt
+{ 
+  charstring prompt_name,
+  charstring prompt_value
+};
+type record ASP_SSH_ClearPrompt {}; // NULL_type
+type record ASP_SSH_SetMode { ReadMode readmode };
+type record ASP_SSH_Connect {};	// NULL_type
+type record ASP_SSH_SetUserID { charstring usrid };
+type record ASP_SSH_SetRemoteHost { charstring remotehost };
+type record ASP_SSH_SetRemotePort { charstring remoteport };
+type record ASP_SSH_SetAdditionalParameters { charstring additionalparameters };
+
+} // module

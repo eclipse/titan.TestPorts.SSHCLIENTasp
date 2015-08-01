@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (c) 2014 Ericsson
+
+  The copyright to the computer  program(s) herein  is the property of Ericsson.
+  The program(s) may be used and/or copied only with the written permission
+  of Ericsson or in accordance with  the terms and conditions  stipulated in the
+  agreement/contract under which the program(s) has been supplied.
+
+
+   File:               SSHCLIENTasp_CNL113484.tpd
+   Description:        tpd project file
+   Rev:                R3E
+   Prodnr:             CNL 113 484
+   Updated:            2014-09-08
+   Contact:            http://ttcn.ericsson.se
+
+ -->
+<TITAN_Project_File_Information version="1.0">
+  <ProjectName>SSHCLIENTasp_CNL113484</ProjectName>
+  <Folders>
+    <FolderResource projectRelativePath="doc" relativeURI="doc"/>
+    <FolderResource projectRelativePath="src" relativeURI="src"/>
+  </Folders>
+  <Files>
+    <FileResource projectRelativePath="doc/SSHCLIENTasp_CNL113484_FS.pdf" relativeURI="doc/SSHCLIENTasp_CNL113484_FS.pdf"/>
+    <FileResource projectRelativePath="doc/SSHCLIENTasp_CNL113484_PRI.pdf" relativeURI="doc/SSHCLIENTasp_CNL113484_PRI.pdf"/>
+    <FileResource projectRelativePath="doc/SSHCLIENTasp_CNL113484_UG.pdf" relativeURI="doc/SSHCLIENTasp_CNL113484_UG.pdf"/>
+    <FileResource projectRelativePath="src/SSHCLIENTasp_PT.cc" relativeURI="src/SSHCLIENTasp_PT.cc"/>
+    <FileResource projectRelativePath="src/SSHCLIENTasp_PT.hh" relativeURI="src/SSHCLIENTasp_PT.hh"/>
+    <FileResource projectRelativePath="src/SSHCLIENTasp_PortType.ttcn" relativeURI="src/SSHCLIENTasp_PortType.ttcn"/>
+    <FileResource projectRelativePath="src/SSHCLIENTasp_Types.ttcn" relativeURI="src/SSHCLIENTasp_Types.ttcn"/>
+  </Files>
+  <ActiveConfiguration>Default</ActiveConfiguration>
+  <Configurations>
+    <Configuration name="Default">
+      <ProjectProperties>
+        <MakefileSettings>
+          <generateInternalMakefile>true</generateInternalMakefile>
+          <GNUMake>true</GNUMake>
+          <incrementalDependencyRefresh>true</incrementalDependencyRefresh>
+          <targetExecutable>bin/SSHCLIENTasp_CNL113484</targetExecutable>
+          <linkerLibraries>
+            <listItem>util</listItem>
+          </linkerLibraries>
+        </MakefileSettings>
+        <LocalBuildSettings>
+          <workingDirectory>bin</workingDirectory>
+        </LocalBuildSettings>
+      </ProjectProperties>
+      <FolderProperties>
+        <FolderResource>
+          <FolderPath>doc</FolderPath>
+          <FolderProperties>
+            <ExcludeFromBuild>true</ExcludeFromBuild>
+          </FolderProperties>
+        </FolderResource>
+      </FolderProperties>
+    </Configuration>
+  </Configurations>
+</TITAN_Project_File_Information>

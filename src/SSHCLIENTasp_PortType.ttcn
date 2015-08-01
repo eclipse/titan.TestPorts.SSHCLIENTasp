@@ -1,0 +1,47 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+// Copyright Test Competence Center (TCC) ETH 2005                           //
+//                                                                           //
+// The copyright to the computer  program(s) herein  is the property of TCC. //
+// The program(s) may be used and/or copied only with the written permission //
+// of TCC or in accordance with  the terms and conditions  stipulated in the //
+// agreement/contract under which the program(s) has been supplied.          //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+//
+//  File:               SSHCLIENTasp_PortType.ttcn
+//  Description:        SSHCLIENTasp testport definition file
+//  Rev:                R3E
+//  Prodnr:             CNL 113 484
+//  Updated:            2005.11.23
+//  Contact:            http://ttcn.ericsson.se
+//
+
+
+module SSHCLIENTasp_PortType
+{
+
+import from SSHCLIENTasp_Types all;
+
+//*****************************************************************************
+//Port type definitions
+//*****************************************************************************
+
+
+type port SSHCLIENTasp_PT message {
+    inout ASP_SSH;
+    in    ASP_SSH_Close;
+    in    ASP_SSH_PseudoPrompt;
+    in    ASP_SSH_Status;
+    out   ASP_SSH_SetPrompt;
+    out   ASP_SSH_SetRegexPrompt;
+    out   ASP_SSH_ClearPrompt;
+    out   ASP_SSH_SetMode;
+    out   ASP_SSH_Connect;
+    out   ASP_SSH_SetUserID;
+    out   ASP_SSH_SetRemoteHost;
+    out   ASP_SSH_SetRemotePort;
+    out   ASP_SSH_SetAdditionalParameters;
+}
+
+} //module
