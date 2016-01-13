@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (c) 2014 Ericsson
+ Copyright (c) 2015 Ericsson
 
-  The copyright to the computer  program(s) herein  is the property of Ericsson.
-  The program(s) may be used and/or copied only with the written permission
-  of Ericsson or in accordance with  the terms and conditions  stipulated in the
-  agreement/contract under which the program(s) has been supplied.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Public License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/legal/epl-v10.html
 
 
    File:               SSHCLIENTasp_CNL113484.tpd
    Description:        tpd project file
-   Rev:                R3E
+   Rev:                R4C
    Prodnr:             CNL 113 484
-   Updated:            2014-09-08
-   Contact:            http://ttcn.ericsson.se
 
  -->
 <TITAN_Project_File_Information version="1.0">

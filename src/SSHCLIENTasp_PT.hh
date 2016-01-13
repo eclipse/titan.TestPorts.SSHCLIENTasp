@@ -1,20 +1,24 @@
-///////////////////////////////////////////////////////////////////////////////
-//                                                                           //
-// Copyright Test Competence Center (TCC) ETH 2012                           //
-//                                                                           //
-// The copyright to the computer  program(s) herein  is the property of TCC. //
-// The program(s) may be used and/or copied only with the written permission //
-// of TCC or in accordance with  the terms and conditions  stipulated in the //
-// agreement/contract under which the program(s) has been supplied.          //
-//                                                                           //
-///////////////////////////////////////////////////////////////////////////////
+/******************************************************************************
+* Copyright (c) 2005, 2015  Ericsson AB
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+* Peter Dimitrov
+* Gabor Szalai
+* Kulcsár Endre
+* Norbert Pinter
+* Zoltan Medve
+* Zsolt Nandor Torok
+* Zsolt Török
+******************************************************************************/
 //
 //  File:               SSHCLIENTasp_PT.hh
 //  Description:        SSHCLIENTasp test port header
-//  Rev:                R3E
+//  Rev:                R4C
 //  Prodnr:             CNL 113 484
-//  Updated:            2012-03-09
-//  Contact:            http://ttcn.ericsson.se
 // 
 
 
@@ -101,8 +105,6 @@ protected:
                     const unsigned char * buf, size_t buflen);
     boolean     buf_strcmp(const char * s1, const unsigned char * s2,
                 size_t s2_len, size_t& pos);
-    boolean     find_echo(const char * s1, const unsigned char * s2,
-                size_t s2_len, size_t& pos); 
     void        addPrompt(const char* parameter_name, const char* parameter_value);
     void        addRegexPrompt(const char* parameter_name, const char* parameter_value);
 
@@ -128,8 +130,15 @@ private:
     CHARSTRING LastSent;
 
     boolean assignEOL;
-    boolean supressEcho;
-    boolean msgrecv;
+    int supressEcho;  // 0- no echo cancellation
+                      // 1- try to cancel the echo by setting the terminal attributes
+                      // 2- try to cancel the echo by sending "stty -echo" because the terminal settings are not working with every host
+                      /*      How it works:
+                                - After the first prompt is detected, th etest port send the "stty -echo" command
+                                - The first prompt will be discaded
+                                - The data until thenext prompt will be discarded as the printout of the stty command
+                                - The test port waits for the next prompt, which will be handled normally
+                      */
     boolean supressPrompt;
     boolean pseudoPrompt;
     boolean detectServerDisconnected;
@@ -138,8 +147,8 @@ private:
     boolean emptyEcho;
     boolean suppressed;
     boolean rawPrompt;
-       int  readmode;
-    CHARSTRING    echobuf;
+    int  readmode;
+    int prompt_seq;
     TTCN_Buffer ttcn_buf;
     fd_set readfds;
     Prompt_List_SSH_client prompt_list;

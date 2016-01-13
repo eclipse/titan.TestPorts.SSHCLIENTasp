@@ -1,20 +1,24 @@
-///////////////////////////////////////////////////////////////////////////////
-//                                                                           //
-// Copyright Test Competence Center (TCC) ETH 2012                           //
-//                                                                           //
-// The copyright to the computer  program(s) herein  is the property of TCC. //
-// The program(s) may be used and/or copied only with the written permission //
-// of TCC or in accordance with  the terms and conditions  stipulated in the //
-// agreement/contract under which the program(s) has been supplied.          //
-//                                                                           //
-///////////////////////////////////////////////////////////////////////////////
+/******************************************************************************
+* Copyright (c) 2005, 2015  Ericsson AB
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+* Peter Dimitrov
+* Gabor Szalai
+* Kulcsár Endre
+* Norbert Pinter
+* Zoltan Medve
+* Zsolt Nandor Torok
+* Zsolt Török
+******************************************************************************/
 //
 //  File:               SSHCLIENTasp_PT.cc
 //  Description:        SSHCLIENTasp test port source
-//  Rev:                R3E
+//  Rev:                R4C
 //  Prodnr:             CNL 113 484
-//  Updated:            2012-11-12
-//  Contact:            http://ttcn.ericsson.se
 // 
 
 
@@ -111,31 +115,6 @@ char* TTCN_pattern_to_regexp_sshclient(const char* patt){
 using namespace SSHCLIENTasp__Types;
 namespace SSHCLIENTasp__PortType {
 
-boolean SSHCLIENTasp__PT::find_echo(const char * s1, const unsigned char * s2, size_t s2_len, size_t& pos)
-{
-    size_t s1_len = strlen(s1);
-    if(s1_len == 0) return FALSE;
-    int j=0;
-    bool found=false;
-    for(int i=0;i<(int)s2_len; i++ )
-    {
-      if(s1[j]==s2[i]){
-        j++;
-        if(!found){
-          pos=i;
-          found=true;
-        }
-      } else if(found) {
-        if(j==(int)s1_len){
-          return TRUE;
-        } else {
-          found=false;
-          j=0;
-        }
-      }
-    }
-    return found;
-}
 
 
 SSHCLIENTasp__PT::SSHCLIENTasp__PT(const char *par_port_name)
@@ -149,8 +128,7 @@ SSHCLIENTasp__PT::SSHCLIENTasp__PT(const char *par_port_name)
     LastSent = "";
     assignEOL = TRUE;
     EOL = "\n";
-    supressEcho = FALSE;
-    msgrecv = FALSE;
+    supressEcho = 0;
     supressPrompt = FALSE;
     pseudoPrompt = FALSE;
     emptyEcho = FALSE;
@@ -159,8 +137,8 @@ SSHCLIENTasp__PT::SSHCLIENTasp__PT(const char *par_port_name)
     readmode = BUFFERED;
     detectServerDisconnected = TRUE;
     FD_ZERO(&readfds);
-    echobuf = "";
     num_of_params=6;
+    prompt_seq=0;
     additional_parameters = (char **)Malloc(6*sizeof(char*));
     additional_parameters[0]=mcopystr("ssh") ;
     additional_parameters[1]=mcopystr("-4") ; // ip_version
@@ -262,11 +240,13 @@ void SSHCLIENTasp__PT::set_parameter(const char *parameter_name,
     {
         log("Reading testport parameter: %s = %s", parameter_name, parameter_value );
         if (strcasecmp(parameter_value,"yes") == 0)
-            supressEcho = TRUE;
+            supressEcho = 1;
         else if (strcasecmp(parameter_value,"no") == 0)
-            supressEcho = FALSE;
+            supressEcho = 0;
+        else if (strcasecmp(parameter_value,"stty") == 0)
+            supressEcho = 2;
         else
-            error("set_parameter(): Invalid parameter value: %s for parameter %s. Only yes and no can be used!" , 
+            error("set_parameter(): Invalid parameter value: %s for parameter %s. Only \"yes\", \"no\" or \"stty\" can be used!" , 
                 parameter_value, parameter_name); 
     } 
     else if(strcasecmp(parameter_name, "supressPrompt") == 0)
@@ -398,7 +378,6 @@ void SSHCLIENTasp__PT::Event_Handler(const fd_set */*read_fds*/,
     double /*time_since_last_call*/)
 {
     log("Calling Event_Handler().");
-    msgrecv = TRUE;
     if (RecvMsg() < 0)
     {
         if(detectServerDisconnected) return;
@@ -408,46 +387,6 @@ void SSHCLIENTasp__PT::Event_Handler(const fd_set */*read_fds*/,
 
     while(TRUE)
     {
-        size_t echo_pos;
-        if(supressEcho && find_echo((const char*)echobuf, ttcn_buf.get_data(),
-            ttcn_buf.get_len(), echo_pos))
-        {
-            log("Supressing ECHO.");
-            size_t blen=ttcn_buf.get_len();
-            size_t echo_len=echobuf.lengthof();
-            size_t echo_len_in_buff=blen-echo_pos>echo_len?echo_len:blen-echo_pos;
-            log("echo_pos: %zu, echo_len: %zu, echo_len_in_buff: %zu",echo_pos,echo_len,echo_len_in_buff);
-            if(debug)
-            {
-                TTCN_Logger::begin_event(TTCN_DEBUG);
-                echobuf.log();
-                TTCN_Logger::end_event();
-            }
-            if(echo_pos==0){  // echo in the begining
-              ttcn_buf.set_pos(echo_len_in_buff);
-              ttcn_buf.cut();
-            } else if(echo_len+echo_pos>=blen){ // echo in the end
-              ttcn_buf.set_pos(echo_pos);
-              ttcn_buf.cut_end();
-            } else { // echo in the midle
-              OCTETSTRING oct=OCTETSTRING(blen-echo_len-echo_pos,ttcn_buf.get_data()+echo_pos+echo_len);
-              ttcn_buf.set_pos(echo_pos);
-              ttcn_buf.cut_end();
-              ttcn_buf.put_string(oct);
-            }
-            ttcn_buf.rewind();
-            if(echo_len==echo_len_in_buff){
-              echobuf="";
-            } else {
-              echobuf=substr(echobuf,echo_len_in_buff,echo_len-echo_len_in_buff);
-            }
-
-            suppressed = TRUE;
-
-            if(!ttcn_buf.get_len()) {
-              return;
-            }
-        } 
         
         const unsigned char * bufptr = ttcn_buf.get_data();
         int prompt_len;
@@ -494,11 +433,14 @@ void SSHCLIENTasp__PT::Event_Handler(const fd_set */*read_fds*/,
             else if((nl_found && !prompt_found) ||
                 (nl_found && prompt_found && prompt_start_pos_nl <
                 prompt_start_pos_prompt))
-            {
+            {       // Process the lines before the prompt
                 if(prompt_start_pos_nl) {
                     suppressed = FALSE;
-                    incoming_message(CHARSTRING(prompt_start_pos_nl,
-                        (const char*)bufptr));
+                        if(prompt_seq !=1){
+                          incoming_message(CHARSTRING(prompt_start_pos_nl,(const char*)bufptr));
+                        } else {
+                          log("stty response discarded");
+                        }
                 }
                 ttcn_buf.set_pos(prompt_start_pos_nl+1);
                 ttcn_buf.cut();
@@ -509,20 +451,36 @@ void SSHCLIENTasp__PT::Event_Handler(const fd_set */*read_fds*/,
                 if(prompt_start_pos_prompt)
                 {
                     suppressed = FALSE;
-                    incoming_message(CHARSTRING(prompt_start_pos_prompt,
-                        (const char*)bufptr));
+                        if(prompt_seq !=1){
+                          incoming_message(CHARSTRING(prompt_start_pos_prompt, (const char*)bufptr));
+                        } else {
+                          log("stty response discarded");
+                        }
                     ttcn_buf.set_pos(prompt_start_pos_prompt);
                     ttcn_buf.cut();
                 }
                 //... and then send the prompt itself
                     bufptr = ttcn_buf.get_data();
-                    if(!supressPrompt && !pseudoPrompt) {
-                        suppressed = FALSE;
-                        incoming_message(CHARSTRING(prompt_len, (const char*)bufptr));
-                    }
-                    else if(!supressPrompt) {
-                        suppressed = FALSE;
-                        incoming_message(ASP__SSH__PseudoPrompt(NULL_VALUE));
+                    if((supressEcho !=2) // do not use the stty command, 
+                       || prompt_seq ){ // not the first prompt
+                      if(!supressPrompt && !pseudoPrompt) {
+                          suppressed = FALSE;
+                          incoming_message(CHARSTRING(prompt_len, (const char*)bufptr));
+                      }
+                      else if(!supressPrompt) {
+                          suppressed = FALSE;
+                          incoming_message(ASP__SSH__PseudoPrompt(NULL_VALUE));
+                      }
+                      prompt_seq = 2;
+                    } else {  // use stty & first prompt
+                      prompt_seq = 1;
+                      suppressed = FALSE;
+                      LastSent = "stty -echo" + EOL;
+                      log("Sending \"stty -echo\"");
+                      if (write(fd_ssh, (const char*)LastSent, strlen((const char*)LastSent)) <0)
+                      {
+                          incoming_message(ASP__SSH__Status(INTEGER(2),CHARSTRING("Send error! Socket error!")));
+                      }
                     }
                     ttcn_buf.set_pos(prompt_len);
                     ttcn_buf.cut();
@@ -550,7 +508,11 @@ void SSHCLIENTasp__PT::Event_Handler(const fd_set */*read_fds*/,
                     }
                     if(msg_end_pos) {
                         suppressed = FALSE;
-                        incoming_message(CHARSTRING(msg_end_pos, (const char*)bufptr));
+                        if(prompt_seq !=1){
+                          incoming_message(CHARSTRING(msg_end_pos, (const char*)bufptr));
+                        } else {
+                          log("stty response discarded");
+                        }
                     }
                     ttcn_buf.set_pos(prompt_start_pos_prompt);
                     ttcn_buf.cut();
@@ -563,13 +525,26 @@ void SSHCLIENTasp__PT::Event_Handler(const fd_set */*read_fds*/,
 
                 //... and then send the prompt itself
                 bufptr = ttcn_buf.get_data();
-                if(!supressPrompt && !pseudoPrompt) {
-                    suppressed = FALSE;
-                    incoming_message(CHARSTRING(prompt_len, (const char*)bufptr));
-                }
-                else if(!supressPrompt) { 
-                    suppressed = FALSE;
-                    incoming_message(ASP__SSH__PseudoPrompt(NULL_VALUE));
+                if((supressEcho !=2) // do not use the stty command, 
+                   || prompt_seq ){ // not the first prompt
+                  if(!supressPrompt && !pseudoPrompt) {
+                      suppressed = FALSE;
+                      incoming_message(CHARSTRING(prompt_len, (const char*)bufptr));
+                  }
+                  else if(!supressPrompt) {
+                      suppressed = FALSE;
+                      incoming_message(ASP__SSH__PseudoPrompt(NULL_VALUE));
+                  }
+                  prompt_seq = 2;
+                } else {  // use stty & first prompt
+                  prompt_seq = 1;
+                  suppressed = FALSE;
+                  LastSent = "stty -echo" + EOL;
+                  log("Sending \"stty -echo\"");
+                  if (write(fd_ssh, (const char*)LastSent, strlen((const char*)LastSent)) <0)
+                  {
+                      incoming_message(ASP__SSH__Status(INTEGER(2),CHARSTRING("Send error! Socket error!")));
+                  }
                 }
 
                 ttcn_buf.set_pos(prompt_len);
@@ -588,7 +563,6 @@ void SSHCLIENTasp__PT::user_map(const char *system_port)
 {
     log("Calling user_map(%s).",system_port);
     suppressed = FALSE;
-    msgrecv = FALSE;
     if(prompt_list.nof_prompts() == 0)
         error("Missing mandatory parameter: at least one PROMPT or REGEX_PROMPT parameter must be provided!");
     prompt_list.check(port_name);
@@ -617,25 +591,46 @@ void SSHCLIENTasp__PT::cleanup()
     Uninstall_Handler();
     if (fd_ssh!=-1)
     {
+        bool processRunning = true;
+        int attemptToStop = 0;
+        int changedStatePid;
+
         close(fd_ssh);
         fd_ssh = -1;
-        if (kill(pid, 0)==0)
-        {   // the child process is still running
-            kill(pid, SIGQUIT);    
-            sleep(1);
-            if (kill(pid, 0)==0)
-            {   // still running ?!?
-                TTCN_warning("(%s) cleanup(): Forked pseudo terminal with pid=%d could not be stopped, sending SIGKILL.", port_name, (int)pid);
-                kill(pid, SIGKILL);
-            
-                sleep(1);
-                if (kill(pid, 0)==0)   // still running ?!?!?!?!
-                {
-                    //TTCN_error("SSHCLIENTasp__PT::cleanup() Process is still running after SIGKILL with pid=%d, exiting...", (int)pid);
-                    TTCN_warning("(%s) cleanup(): Forked pseudo terminal is still running after SIGKILL with pid=%d, exiting.", port_name, (int)pid);
-                    waitpid(-1, NULL, 0);
-                }
-            }
+        
+        while(processRunning) {
+          switch(attemptToStop) {
+          case 0:
+            kill(pid, 0);
+            break;
+          case 1:
+            kill(pid, SIGQUIT);
+            break;
+          case 2:
+            kill(pid, SIGKILL);
+            break;
+          default:
+            waitpid(-1, NULL, 0);
+            log("Leaving cleanup().");
+            return;
+          }
+          
+          sleep(1);
+          
+          changedStatePid = waitpid(pid, NULL, WNOHANG);
+
+          if (changedStatePid > 0) {
+            log("Forked processed stopped.");
+            processRunning = false;
+          }
+          else if (changedStatePid == 0) {
+            attemptToStop++;
+            log("(%s) cleanup(): Forked pseudo terminal with pid=%d could not be stopped, trying again.", port_name, (int)pid);
+          }
+          else if (changedStatePid < 0) {
+            log("(%s) cleanup(): Error while waiting pid=%d to be stopped.", port_name, (int)pid);
+            break;
+          }
         }
     }
     log("Leaving cleanup().");
@@ -675,14 +670,7 @@ void SSHCLIENTasp__PT::outgoing_send(const ASP__SSH& send_par)
     else if(statusOnSuccess) 
         incoming_message(ASP__SSH__Status(INTEGER(0),CHARSTRING("OK!")));
     LastSent = send_par;
-    if(msgrecv){
-      if(assignEOL) echobuf = send_par + EOL;
-      else echobuf = send_par;
-      msgrecv = FALSE;
-    } else {
-      if(assignEOL) echobuf = echobuf + send_par + EOL;
-      else echobuf = echobuf + send_par;
-    }
+    suppressed = TRUE;
     log("Leaving outgoing_send (ASP_SSH).");
 }
 
@@ -728,7 +716,6 @@ void SSHCLIENTasp__PT::outgoing_send(const ASP__SSH__Connect& /*send_par*/)
         CHARSTRING("ASP_SSH_Connect send error! This ASP can only be used if the connection is closed!")));
         return;
     }
-    msgrecv = FALSE;
     char sSlave[80];
     pid = forkpty(&fd_ssh, sSlave, NULL , NULL );
 
@@ -749,6 +736,19 @@ void SSHCLIENTasp__PT::outgoing_send(const ASP__SSH__Connect& /*send_par*/)
     else 
     {
         // parent code
+        // set echo handling
+        if(supressEcho){
+          log("(%s) Disable echo", port_name);
+          struct termios tios;
+          if(tcgetattr(fd_ssh, &tios)!=-1){
+            tios.c_lflag &= ~(ECHO | ECHONL);
+            if(tcsetattr(fd_ssh, TCSAFLUSH, &tios)==-1){
+              TTCN_warning("(%s) Can not set the echo handling. tcsetattr() failed: %d, %s",port_name,errno,strerror(errno));
+            }
+          } else {
+            TTCN_warning("(%s) Can not set the echo handling. tcgetattr() failed: %d, %s",port_name,errno,strerror(errno));
+          }
+        }
         if(statusOnSuccess) incoming_message(ASP__SSH__Status(INTEGER(0), CHARSTRING("OK!")));
         log("forkpty() returned. fd_ssh is set to %d", fd_ssh);
         log("(%s) outgoing_send (ASP_SSH_Connect): Parent: child started with pid=%d", port_name, (int)pid);
@@ -759,6 +759,7 @@ void SSHCLIENTasp__PT::outgoing_send(const ASP__SSH__Connect& /*send_par*/)
         //for(int i = 0; i<FD_SETSIZE; i++)
         //    if(FD_ISSET(i, &readfds)) TTCN_Logger::log_event("%d ", i);
         //TTCN_Logger::end_event();
+        prompt_seq=0;
         log("Leaving outgoing_send (ASP_SSH_Connect) !");
     }
 }
