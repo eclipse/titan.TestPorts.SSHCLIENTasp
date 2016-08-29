@@ -17,7 +17,7 @@
 //
 //  File:               SSHCLIENTasp_PT.cc
 //  Description:        SSHCLIENTasp test port source
-//  Rev:                R4C
+//  Rev:                R5A
 //  Prodnr:             CNL 113 484
 // 
 
@@ -138,6 +138,7 @@ SSHCLIENTasp__PT::SSHCLIENTasp__PT(const char *par_port_name)
     detectServerDisconnected = TRUE;
     FD_ZERO(&readfds);
     num_of_params=6;
+    num_of_params_map=6;
     prompt_seq=0;
     additional_parameters = (char **)Malloc(6*sizeof(char*));
     additional_parameters[0]=mcopystr("ssh") ;
@@ -566,6 +567,7 @@ void SSHCLIENTasp__PT::user_map(const char *system_port)
     if(prompt_list.nof_prompts() == 0)
         error("Missing mandatory parameter: at least one PROMPT or REGEX_PROMPT parameter must be provided!");
     prompt_list.check(port_name);
+    num_of_params_map=num_of_params;
 
     log("Leaving user_map().");
 }
@@ -575,6 +577,13 @@ void SSHCLIENTasp__PT::user_unmap(const char *system_port)
 {
     log("Calling user_unmap(%s).",system_port);
     cleanup();
+    
+    for(int i=(num_of_params_map-1);i<(num_of_params-1);i++){
+      Free(additional_parameters[i]);
+      additional_parameters[i]=NULL;
+    }
+    num_of_params=num_of_params_map;
+    
     log("Leaving user_unmap().");
 }
 

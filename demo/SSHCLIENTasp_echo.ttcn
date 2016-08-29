@@ -16,7 +16,7 @@
 ******************************************************************************/
 //
 //  File:               SSHCLIENTasp_echo.ttcn
-//  Rev:                R4C
+//  Rev:                R5A
 //  Prodnr:             CNL 113 320
 
 module SSHCLIENTasp_echo{

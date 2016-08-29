@@ -17,7 +17,7 @@
 //
 //  File:               SSHCLIENTasp_PT.hh
 //  Description:        SSHCLIENTasp test port header
-//  Rev:                R4C
+//  Rev:                R5A
 //  Prodnr:             CNL 113 484
 // 
 
@@ -114,6 +114,8 @@ private:
 
     //char recbuf[8192];
 
+    int num_of_params_map;  // stores the number of additional parameters at the tim eof the mapping
+                            // The unmap deletes any additoinal parameters are set via ASP
     int num_of_params;
     char **additional_parameters;
     /* The additional_parameters stores the parameters of the ssh
