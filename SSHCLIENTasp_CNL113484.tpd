@@ -17,13 +17,29 @@
 <TITAN_Project_File_Information version="1.0">
   <ProjectName>SSHCLIENTasp_CNL113484</ProjectName>
   <Folders>
+    <FolderResource projectRelativePath="demo" relativeURI="demo"/>
     <FolderResource projectRelativePath="doc" relativeURI="doc"/>
+    <FolderResource projectRelativePath="doc/FS" relativeURI="doc/FS"/>
+    <FolderResource projectRelativePath="doc/FS/images" relativeURI="doc/FS/images"/>
+    <FolderResource projectRelativePath="doc/UG" relativeURI="doc/UG"/>
+    <FolderResource projectRelativePath="doc/UG/images" relativeURI="doc/UG/images"/>
     <FolderResource projectRelativePath="src" relativeURI="src"/>
   </Folders>
   <Files>
-    <FileResource projectRelativePath="doc/SSHCLIENTasp_CNL113484_FS.pdf" relativeURI="doc/SSHCLIENTasp_CNL113484_FS.pdf"/>
-    <FileResource projectRelativePath="doc/SSHCLIENTasp_CNL113484_PRI.pdf" relativeURI="doc/SSHCLIENTasp_CNL113484_PRI.pdf"/>
-    <FileResource projectRelativePath="doc/SSHCLIENTasp_CNL113484_UG.pdf" relativeURI="doc/SSHCLIENTasp_CNL113484_UG.pdf"/>
+    <FileResource projectRelativePath="demo/SSHCLIENTasp_demo.cfg" relativeURI="demo/SSHCLIENTasp_demo.cfg"/>
+    <FileResource projectRelativePath="demo/SSHCLIENTasp_demo.ttcn" relativeURI="demo/SSHCLIENTasp_demo.ttcn"/>
+    <FileResource projectRelativePath="demo/SSHCLIENTasp_echo.cfg" relativeURI="demo/SSHCLIENTasp_echo.cfg"/>
+    <FileResource projectRelativePath="demo/SSHCLIENTasp_echo.ttcn" relativeURI="demo/SSHCLIENTasp_echo.ttcn"/>
+    <FileResource projectRelativePath="demo/SSHCLIENTasp_functions.ttcn" relativeURI="demo/SSHCLIENTasp_functions.ttcn"/>
+    <FileResource projectRelativePath="doc/FS/SSHCLIENTasp Test Port for TTCN-3 Toolset with TITAN, Function Specification.adoc" relativeURI="doc/FS/SSHCLIENTasp%20Test%20Port%20for%20TTCN-3%20Toolset%20with%20TITAN,%20Function%20Specification.adoc"/>
+    <FileResource projectRelativePath="doc/FS/SSHCLIENTasp Test Port for TTCN-3 Toolset with TITAN, Function Specification.pdf" relativeURI="doc/FS/SSHCLIENTasp%20Test%20Port%20for%20TTCN-3%20Toolset%20with%20TITAN,%20Function%20Specification.pdf"/>
+    <FileResource projectRelativePath="doc/FS/images/Overview.png" relativeURI="doc/FS/images/Overview.png"/>
+    <FileResource projectRelativePath="doc/SSHCLIENTasp_CNL113484_PRI.doc" relativeURI="doc/SSHCLIENTasp_CNL113484_PRI.doc"/>
+    <FileResource projectRelativePath="doc/UG/SSHCLIENTasp Test Port for TTCN-3 Toolset with TITAN, Users Guide.adoc" relativeURI="doc/UG/SSHCLIENTasp%20Test%20Port%20for%20TTCN-3%20Toolset%20with%20TITAN,%20Users%20Guide.adoc"/>
+    <FileResource projectRelativePath="doc/UG/SSHCLIENTasp Test Port for TTCN-3 Toolset with TITAN, Users Guide.pdf" relativeURI="doc/UG/SSHCLIENTasp%20Test%20Port%20for%20TTCN-3%20Toolset%20with%20TITAN,%20Users%20Guide.pdf"/>
+    <FileResource projectRelativePath="doc/UG/images/Overview_of_the_SSHCLIENTasp_test_port.png" relativeURI="doc/UG/images/Overview_of_the_SSHCLIENTasp_test_port.png"/>
+    <FileResource projectRelativePath="doc/UG/images/Overview_of_the_config_process.png" relativeURI="doc/UG/images/Overview_of_the_config_process.png"/>
+    <FileResource projectRelativePath="doc/change.log" relativeURI="doc/change.log"/>
     <FileResource projectRelativePath="src/SSHCLIENTasp_PT.cc" relativeURI="src/SSHCLIENTasp_PT.cc"/>
     <FileResource projectRelativePath="src/SSHCLIENTasp_PT.hh" relativeURI="src/SSHCLIENTasp_PT.hh"/>
     <FileResource projectRelativePath="src/SSHCLIENTasp_PortType.ttcn" relativeURI="src/SSHCLIENTasp_PortType.ttcn"/>
