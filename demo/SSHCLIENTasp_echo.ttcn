@@ -8,11 +8,11 @@
 * Contributors:
 * Peter Dimitrov
 * Gabor Szalai
-* Kulcsár Endre
+* KulcsÃ¡r Endre
 * Norbert Pinter
 * Zoltan Medve
 * Zsolt Nandor Torok
-* Zsolt Török
+* Zsolt TÃ¶rÃ¶k
 ******************************************************************************/
 //
 //  File:               SSHCLIENTasp_echo.ttcn
@@ -83,7 +83,7 @@ altstep as_T_SSHresp_timeout() runs on SSH_CT {
 
 altstep as_regular_msg_rec() runs on SSH_CT {
   var charstring msg;
-  [] SSH_PCO.receive(?) -> value msg {
+  [] SSH_PCO.receive(ASP_SSH:?) -> value msg {
     T_sshResp.stop;
     sshRespStr := sshRespStr & msg;
     log("** msg: " & msg);

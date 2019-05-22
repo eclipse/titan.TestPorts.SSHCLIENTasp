@@ -8,11 +8,11 @@
 * Contributors:
 * Peter Dimitrov
 * Gabor Szalai
-* Kulcsár Endre
+* KulcsÃ¡r Endre
 * Norbert Pinter
 * Zoltan Medve
 * Zsolt Nandor Torok
-* Zsolt Török
+* Zsolt TÃ¶rÃ¶k
 ******************************************************************************/
 //
 //  File:               SSHCLIENTasp_PT.hh

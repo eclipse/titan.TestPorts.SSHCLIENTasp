@@ -8,11 +8,11 @@
 * Contributors:
 * Peter Dimitrov
 * Gabor Szalai
-* Kulcsár Endre
+* Kulcsï¿½r Endre
 * Norbert Pinter
 * Zoltan Medve
 * Zsolt Nandor Torok
-* Zsolt Török
+* Zsolt Tï¿½rï¿½k
 ******************************************************************************/
 //
 //  File:               SSHCLIENTasp_PT.hh
@@ -142,7 +142,7 @@ function f_sshCLIconversation(in CommandList clist, in float cliTimeOut) runs on
 
     alt
     {
-    [] SSH_PCO.receive(?) -> value respFragment
+    [] SSH_PCO.receive(ASP_SSH:?) -> value respFragment
         {
         T_sshResp.stop;
         sshRespStr := sshRespStr & respFragment; // collect and concat fragments if any
